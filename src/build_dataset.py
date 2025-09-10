@@ -1,10 +1,11 @@
 # TO DO:
-#1.Generate mel of a set of sound data and indexing them
-#2.Get their embeddings and build a k-means model using features in extract_units.py
-#3.The prepared dataset has the components: mel, discrete units
+#1.build a k-means model using features in extract_units.py
+#2.Generate mel of a set of sound data
+#3.Get their embeddings and discrete units
+#4.The prepared dataset has the components: mel, discrete tokens
 
 import torch
-from torch.utils.data import Dataset, DataLoader
+from torch.utils.data import Dataset
 import soundfile as sf
 import librosa
 
@@ -25,9 +26,9 @@ class MelTokenDataset(Dataset):
         # 1) Mel
         mel = librosa.feature.melspectrogram(
             y=wav, sr=sr,
-            n_fft=self.mel_cfg["n_fft"],
-            hop_length=self.mel_cfg["hop_length"],
-            n_mels=self.mel_cfg["n_mels"]
+            n_fft=self.mel_cfg["n_fft"],    #400
+            hop_length=self.mel_cfg["hop_length"],  #160
+            n_mels=self.mel_cfg["n_mels"]   #80
         )
         mel = torch.from_numpy(librosa.power_to_db(mel)).T  # [T, 80]
 

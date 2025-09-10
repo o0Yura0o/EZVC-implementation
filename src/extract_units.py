@@ -16,13 +16,13 @@ xeus, xeus_args = SSLTask.build_model_from_file(
 
 # print(xeus)
 
-#read dataset
+#read dataset(a subset of the dataset that is expected to train the decoder)
 # for 迴圈
 wav, sr = sf.read("data/wavs/test1.wav")       # XEUS 期望 16kHz
 wavs = pad_sequence(torch.tensor([wav]), batch_first=True).to(device)
 wav_lengths = torch.LongTensor([len(wav)]).to(device)
 
-# 取最後一層 hidden states => [B, T, H]
+# 取第14層 hidden states => [B, T, H]
 feats = xeus.encode(wavs, wav_lengths, use_final_output=False)[0][13]
 
 print(feats)
@@ -33,7 +33,7 @@ kmeans = MiniBatchKMeans(n_clusters=500, batch_size=2048, n_init='auto').fit(fea
 joblib.dump(kmeans, "src/kmeans.joblib")
 
 # 推理量化
-def quantize(feats, kmeans):
-    # feats: [T, H] -> token ids: [T]
-    c = kmeans.predict(feats.detach().cpu().numpy())
-    return torch.from_numpy(c).long()
+# def quantize(feats, kmeans):
+#     # feats: [T, H] -> token ids: [T]
+#     c = kmeans.predict(feats.detach().cpu().numpy())
+#     return torch.from_numpy(c).long()
